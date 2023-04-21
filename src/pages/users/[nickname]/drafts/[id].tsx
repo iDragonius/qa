@@ -1,13 +1,28 @@
-import { GetServerSideProps } from "next";
-import { getSession, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
-import React, { ChangeEvent, FC, useState } from "react";
+import React, { ChangeEvent, FC, useEffect, useState } from "react";
 import { api } from "~/utils/api";
 
-const Ask: FC = ({}) => {
-  const { mutate } = api.question.createQuestion.useMutation();
-  const { push } = useRouter();
-  const { data: session } = useSession();
+interface UserDraftProps {}
+
+const UserDraft: FC<UserDraftProps> = ({}) => {
+  const { mutate } = api.question.publishQuestion.useMutation();
+  const { query, isReady, push } = useRouter();
+  const ctx = api.useContext();
+  const {
+    data: draft,
+    isSuccess,
+    isRefetching,
+  } = api.question.getUserDraft.useQuery(query.id as string, {
+    enabled: isReady,
+    refetchOnMount: true,
+  });
+  useEffect(() => {
+    setQuestionData({
+      title: draft?.title as string,
+      content: draft?.content as string,
+    });
+  }, [isSuccess, isRefetching]);
+
   const [questionData, setQuestionData] = useState<{
     title: string;
     content: string;
@@ -26,7 +41,7 @@ const Ask: FC = ({}) => {
   return (
     <div>
       <div className="mb-5 rounded-lg bg-base-100 p-5 ">
-        <h1 className="text-lg text-primary-content">Ask new question</h1>
+        <h1 className="text-lg text-primary-content">Your draft</h1>
       </div>
 
       <div className="mb-5 rounded-lg bg-base-100 p-5">
@@ -55,44 +70,47 @@ const Ask: FC = ({}) => {
           onChange={changeData}
           minLength={30}
           name={"content"}
+          rows={10}
           className="textarea-bordered textarea mt-2 w-full"
         />
       </div>
 
-      <div className="flex space-x-5">
+      <div className="mb-10 flex space-x-5">
         <button
           className="btn-primary btn"
-          onClick={() => {
+          onClick={() =>
             mutate(
               {
-                ...questionData,
+                id: query.id as string,
                 draft: false,
+                ...questionData,
               },
               {
-                onSuccess(data) {
-                  push(`/questions/${data.id}`);
+                onSuccess() {
+                  ctx.question.invalidate();
                 },
               }
-            );
-          }}
+            )
+          }
         >
           Publish
         </button>
         <button
           className="btn-ghost btn"
-          onClick={() => {
+          onClick={() =>
             mutate(
               {
-                ...questionData,
+                id: query.id as string,
                 draft: true,
+                ...questionData,
               },
               {
-                onSuccess(data) {
-                  push(`/users/${session?.user.nickname}/drafts`);
+                onSuccess() {
+                  push(`/users/${query.nickname as string}/drafts`);
                 },
               }
-            );
-          }}
+            )
+          }
         >
           Save to drafts
         </button>
@@ -101,21 +119,4 @@ const Ask: FC = ({}) => {
   );
 };
 
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const session = await getSession(ctx);
-  if (!session) {
-    return {
-      redirect: {
-        destination: "/questions",
-        permanent: false,
-      },
-    };
-  }
-  return {
-    props: {
-      session,
-    },
-  };
-};
-
-export default Ask;
+export default UserDraft;

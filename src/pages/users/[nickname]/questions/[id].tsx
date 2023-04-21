@@ -1,13 +1,26 @@
-import { GetServerSideProps } from "next";
-import { getSession, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
-import React, { ChangeEvent, FC, useState } from "react";
+import React, { type ChangeEvent, type FC, useEffect, useState } from "react";
 import { api } from "~/utils/api";
 
-const Ask: FC = ({}) => {
-  const { mutate } = api.question.createQuestion.useMutation();
-  const { push } = useRouter();
-  const { data: session } = useSession();
+const UserQuestion: FC = ({}) => {
+  const { mutate } = api.question.publishQuestion.useMutation();
+  const { query, isReady, push } = useRouter();
+  const ctx = api.useContext();
+  const {
+    data: question,
+    isSuccess,
+    isRefetching,
+  } = api.question.getUserQuestion.useQuery(query.id as string, {
+    enabled: isReady,
+    refetchOnMount: true,
+  });
+  useEffect(() => {
+    setQuestionData({
+      title: question?.title as string,
+      content: question?.content as string,
+    });
+  }, [isSuccess, isRefetching]);
+
   const [questionData, setQuestionData] = useState<{
     title: string;
     content: string;
@@ -25,8 +38,16 @@ const Ask: FC = ({}) => {
   };
   return (
     <div>
-      <div className="mb-5 rounded-lg bg-base-100 p-5 ">
-        <h1 className="text-lg text-primary-content">Ask new question</h1>
+      <div className="mb-5 flex items-center justify-between rounded-lg bg-base-100 p-5 ">
+        <h1 className="text-lg text-primary-content">Your question</h1>
+        <div
+          className=" tooltip tooltip-bottom "
+          data-tip="To change status of question go to questions"
+        >
+          <p className="cursor-pointer rounded-lg bg-primary py-2 px-5 text-primary-content">
+            {question?.is_answered ? "Closed" : "Open"}
+          </p>
+        </div>
       </div>
 
       <div className="mb-5 rounded-lg bg-base-100 p-5">
@@ -55,67 +76,35 @@ const Ask: FC = ({}) => {
           onChange={changeData}
           minLength={30}
           name={"content"}
+          rows={10}
           className="textarea-bordered textarea mt-2 w-full"
         />
       </div>
 
-      <div className="flex space-x-5">
+      <div className="mb-10 flex space-x-5">
         <button
           className="btn-primary btn"
           onClick={() => {
             mutate(
               {
-                ...questionData,
+                id: query.id as string,
                 draft: false,
-              },
-              {
-                onSuccess(data) {
-                  push(`/questions/${data.id}`);
-                },
-              }
-            );
-          }}
-        >
-          Publish
-        </button>
-        <button
-          className="btn-ghost btn"
-          onClick={() => {
-            mutate(
-              {
                 ...questionData,
-                draft: true,
               },
               {
-                onSuccess(data) {
-                  push(`/users/${session?.user.nickname}/drafts`);
+                async onSuccess() {
+                  await ctx.question.invalidate();
+                  await push(`/users/${query.nickname as string}/questions`);
                 },
               }
             );
           }}
         >
-          Save to drafts
+          Save
         </button>
       </div>
     </div>
   );
 };
 
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const session = await getSession(ctx);
-  if (!session) {
-    return {
-      redirect: {
-        destination: "/questions",
-        permanent: false,
-      },
-    };
-  }
-  return {
-    props: {
-      session,
-    },
-  };
-};
-
-export default Ask;
+export default UserQuestion;

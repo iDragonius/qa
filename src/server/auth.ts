@@ -70,9 +70,8 @@ export const authOptions: NextAuthOptions = {
       clientSecret: env.DISCORD_CLIENT_SECRET,
     }),
     GoogleProvider({
-      clientId:
-        "1033060680105-a756orogamhk6iab1c73t04dlmvdaphc.apps.googleusercontent.com",
-      clientSecret: "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",
+      clientId: env.GOOGLE_CLIENT_ID,
+      clientSecret: env.GOOGLE_CLIENT_SECRET,
     }),
     // CredentialsProvider({
     //   type: "credentials",

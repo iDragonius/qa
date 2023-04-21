@@ -2,7 +2,7 @@
 const config = {
   content: ["./src/**/*.{js,ts,jsx,tsx}"],
   daisyui: {
-    themes: ["pastel", "dark"],
+    themes: ["wireframe", "dark"],
   },
   theme: {
     extend: {},

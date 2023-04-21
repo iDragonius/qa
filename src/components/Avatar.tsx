@@ -22,10 +22,21 @@ const Avatar: FC = ({}) => {
         className="dropdown-content menu rounded-box menu-compact mt-3 w-52 bg-base-100 p-2 shadow"
       >
         <li>
-          <Link href={"/profile"}>Your profile</Link>
+          <Link href={`/users/${sessionData?.user.nickname as string}`}>
+            Your profile
+          </Link>
         </li>
         <li>
-          <Link href={"/settings"}>Your questions</Link>
+          <Link
+            href={`/users/${sessionData?.user.nickname as string}/questions`}
+          >
+            Your questions
+          </Link>
+        </li>
+        <li>
+          <Link href={`/users/${sessionData?.user.nickname as string}/drafts`}>
+            Your drafts
+          </Link>
         </li>
         <li>
           <Link href={"/settings"}>Settings</Link>

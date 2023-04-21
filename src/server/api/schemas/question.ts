@@ -8,4 +8,6 @@ export const questionCreateSchema = z.object({
 export const questionPublishSchema = z.object({
   id: z.string(),
   draft: z.boolean(),
+  title: z.string(),
+  content: z.string(),
 });

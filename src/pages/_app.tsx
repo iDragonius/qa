@@ -6,6 +6,7 @@ import { api } from "~/utils/api";
 
 import "~/styles/globals.css";
 import Layout from "~/components/Layout";
+import { useLocalStorage } from "usehooks-ts";
 
 const MyApp: AppType<{ session: Session | null }> = ({
   Component,

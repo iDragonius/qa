@@ -1,9 +1,11 @@
-import { signIn } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
+import Link from "next/link";
 import React, { FC } from "react";
 
 const Hero = ({}) => {
+  const { data: session } = useSession();
   return (
-    <div className="hero  rounded-xl bg-base-200 py-10">
+    <div className="hero  mb-5 rounded-xl bg-base-200 py-10">
       <div className="hero-content text-center">
         <div className="max-w-md">
           <h1 className="text-5xl font-bold">
@@ -16,12 +18,18 @@ const Hero = ({}) => {
             Ask questions, get different answers and choose the one you like. To
             get answers from our community, click the button below
           </p>
-          <button
-            className="btn-primary btn"
-            onClick={async () => await signIn()}
-          >
-            Get Started
-          </button>
+          {session ? (
+            <Link href={"/questions/ask"} className="btn-primary btn">
+              Ask question
+            </Link>
+          ) : (
+            <button
+              className="btn-primary btn"
+              onClick={async () => await signIn()}
+            >
+              Get Started
+            </button>
+          )}
         </div>
       </div>
     </div>

@@ -66,7 +66,9 @@ const Layout: FC<LayoutProps> = ({ children }) => {
               </button>
             </div>
           </Modal>
-          <div className="xl:w-[1000px]">{children}</div>
+          <div className=" min-h-[calc(100vh-158px)] xl:w-[1000px]">
+            {children}
+          </div>
         </div>
       </Sidebar>
     </>
