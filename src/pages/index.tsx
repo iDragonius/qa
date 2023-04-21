@@ -44,7 +44,7 @@ const Home: FC = ({}) => {
         </h1>
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 min-[900px]:grid-cols-3">
           {tops?.questions?.map((question) => (
-            <QuestionItem data={question} />
+            <QuestionItem data={question} key={question.id} />
           ))}
         </div>
       </div>
@@ -56,7 +56,8 @@ const Home: FC = ({}) => {
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 min-[900px]:grid-cols-3">
           {tops?.users?.map((u) => (
             <Link
-              href={`/users/${u.nickname}`}
+              key={u.id}
+              href={`/users/${u.nickname as string}`}
               className="cursor-pointer rounded-lg bg-primary p-5 text-primary-content hover:scale-105"
             >
               <div className="mb-4 flex items-center">

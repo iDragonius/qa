@@ -12,7 +12,7 @@ const EmptyState: FC<EmptyStateProps> = ({ type }) => {
     <div className="mx-auto flex w-full flex-col items-center rounded-lg bg-base-100 px-20 py-5">
       <Image src={emptyState} alt={"empty"} width={240} height={240} />
       <h1 className="mt-5 text-2xl  font-semibold text-primary-content">
-        You haven't any {type}
+        You have not any {type}
       </h1>
       <Link href={"/questions/ask"} className={"btn mt-2 "}>
         Ask question

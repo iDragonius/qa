@@ -69,8 +69,8 @@ const Ask: FC = ({}) => {
                 draft: false,
               },
               {
-                onSuccess(data) {
-                  push(`/questions/${data.id}`);
+                async onSuccess(data) {
+                  await push(`/questions/${data.id}`);
                 },
               }
             );
@@ -87,8 +87,10 @@ const Ask: FC = ({}) => {
                 draft: true,
               },
               {
-                onSuccess(data) {
-                  push(`/users/${session?.user.nickname}/drafts`);
+                async onSuccess(data) {
+                  await push(
+                    `/users/${session?.user.nickname as string}/drafts`
+                  );
                 },
               }
             );

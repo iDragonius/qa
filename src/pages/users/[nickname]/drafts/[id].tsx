@@ -2,9 +2,7 @@ import { useRouter } from "next/router";
 import React, { ChangeEvent, FC, useEffect, useState } from "react";
 import { api } from "~/utils/api";
 
-interface UserDraftProps {}
-
-const UserDraft: FC<UserDraftProps> = ({}) => {
+const UserDraft: FC = () => {
   const { mutate } = api.question.publishQuestion.useMutation();
   const { query, isReady, push } = useRouter();
   const ctx = api.useContext();
@@ -86,8 +84,8 @@ const UserDraft: FC<UserDraftProps> = ({}) => {
                 ...questionData,
               },
               {
-                onSuccess() {
-                  ctx.question.invalidate();
+                async onSuccess() {
+                  await ctx.question.invalidate();
                 },
               }
             )
@@ -105,8 +103,8 @@ const UserDraft: FC<UserDraftProps> = ({}) => {
                 ...questionData,
               },
               {
-                onSuccess() {
-                  push(`/users/${query.nickname as string}/drafts`);
+                async onSuccess() {
+                  await push(`/users/${query.nickname as string}/drafts`);
                 },
               }
             )
