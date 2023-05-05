@@ -5,13 +5,16 @@ import EmptyState from "~/components/EmptyState";
 import { useRouter } from "next/router";
 import dayjs from "dayjs";
 import { GetServerSideProps } from "next";
+import useTranslation from "next-translate/useTranslation";
 const UserDrafts: FC = ({}) => {
   const { query } = useRouter();
   const { data: drafts } = api.question.getUserDrafts.useQuery(undefined, {
     refetchOnMount: true,
   });
+  const { t } = useTranslation("common");
+
   if (drafts?.length === 0) {
-    return <EmptyState type={"drafts"} />;
+    return <EmptyState type={true} />;
   }
 
   return (
@@ -36,7 +39,7 @@ const UserDrafts: FC = ({}) => {
               className="btn-primary btn-sm btn  px-5"
               href={`/users/${query.nickname as string}/drafts/${draft.id}`}
             >
-              View
+              {t("view")}
             </Link>
           </div>
         </div>

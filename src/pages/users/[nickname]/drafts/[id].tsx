@@ -1,6 +1,7 @@
 import { useRouter } from "next/router";
 import React, { ChangeEvent, FC, useEffect, useState } from "react";
 import { api } from "~/utils/api";
+import useTranslation from "next-translate/useTranslation";
 
 const UserDraft: FC = () => {
   const { mutate } = api.question.publishQuestion.useMutation();
@@ -14,6 +15,7 @@ const UserDraft: FC = () => {
     enabled: isReady,
     refetchOnMount: true,
   });
+  const {t} = useTranslation('common')
   useEffect(() => {
     setQuestionData({
       title: draft?.title as string,
@@ -39,29 +41,28 @@ const UserDraft: FC = () => {
   return (
     <div>
       <div className="mb-5 rounded-lg bg-base-100 p-5 ">
-        <h1 className="text-lg text-primary-content">Your draft</h1>
+        <h1 className="text-lg text-primary-content">{t('user_drafts')}</h1>
       </div>
 
       <div className="mb-5 rounded-lg bg-base-100 p-5">
-        <h2 className="text-sm text-primary-content">Title</h2>
+        <h2 className="text-sm text-primary-content">{t('title_label')}</h2>
         <p className="text-xs text-neutral-content">
-          Be specific and imagine you’re asking a question to another person.
+            {t('title_description')}
         </p>
         <input
           type="text"
           value={questionData.title}
           onChange={changeData}
           name={"title"}
-          placeholder="Type here"
+          placeholder= {t('title_placeholder')}
           className="input-bordered input mt-2 w-full"
         />
       </div>
 
       <div className="mb-5 rounded-lg bg-base-100 p-5">
-        <h2 className="text-sm text-primary-content">Content</h2>
+        <h2 className="text-sm text-primary-content"> {t('content_label')}</h2>
         <p className="text-xs text-neutral-content">
-          The body of your question contains your problem details and results.
-          Minimum 30 characters
+            {t('content_description')}
         </p>
         <textarea
           value={questionData.content}
@@ -91,7 +92,7 @@ const UserDraft: FC = () => {
             )
           }
         >
-          Publish
+            {t('publish')}
         </button>
         <button
           className="btn-ghost btn"
@@ -110,7 +111,7 @@ const UserDraft: FC = () => {
             )
           }
         >
-          Save to drafts
+            {t('draft')}
         </button>
       </div>
     </div>

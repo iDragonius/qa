@@ -2,9 +2,13 @@ import { signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 import React, { FC } from "react";
+import useTranslation from "next-translate/useTranslation";
+import {useRouter} from "next/router";
 
 const Avatar: FC = ({}) => {
   const { data: sessionData } = useSession();
+  const {t} = useTranslation('common')
+  const {locales, locale, asPath} = useRouter()
   return (
     <div className="dropdown-end dropdown">
       <label tabIndex={0} className="btn-ghost btn-circle avatar btn">
@@ -23,26 +27,43 @@ const Avatar: FC = ({}) => {
       >
         <li>
           <Link href={`/users/${sessionData?.user.nickname as string}`}>
-            Your profile
+            {t('user_profile')}
           </Link>
         </li>
         <li>
           <Link
             href={`/users/${sessionData?.user.nickname as string}/questions`}
           >
-            Your questions
+            {t('user_questions')}
           </Link>
         </li>
         <li>
           <Link href={`/users/${sessionData?.user.nickname as string}/drafts`}>
-            Your drafts
+            {t('user_drafts')}
+
           </Link>
         </li>
-        <li>
-          <Link href={"/settings"}>Settings</Link>
+        <li tabIndex={0}>
+          <a className="justify-between">
+            {t('language')}
+            <svg className="fill-current" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M8.59,16.58L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.58Z"/></svg>
+          </a>
+          <ul className="p-2 absolute left-0 bg-base-200 z-[1000] top-10">
+            {
+              locales?.map(lang=>(
+                  <li key={lang} className={'px-10'}>
+
+                    <Link href={asPath} locale={lang} >
+                      {lang.toUpperCase()}
+                    </Link>
+                  </li>
+
+              ))
+            }
+          </ul>
         </li>
         <li>
-          <div onClick={() => signOut()}>Logout</div>
+          <div onClick={() => signOut()}>{t('logout')}</div>
         </li>
       </ul>
     </div>

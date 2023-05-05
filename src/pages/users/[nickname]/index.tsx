@@ -4,6 +4,8 @@ import React, { FC, useState } from "react";
 import { api } from "~/utils/api";
 import cx from "classnames";
 import QuestionItem from "~/components/QuestionItem";
+import useTranslation from "next-translate/useTranslation";
+import EmptyState from "~/components/EmptyState";
 const User: FC = ({}) => {
   const { query, isReady } = useRouter();
   const [active, setActive] = useState<1 | 2>(1);
@@ -14,6 +16,7 @@ const User: FC = ({}) => {
       enabled: isReady,
     }
   );
+  const { t } = useTranslation("common");
   const changeActive = (activeEl: 1 | 2) => {
     if (activeEl === active) {
       return;
@@ -39,7 +42,7 @@ const User: FC = ({}) => {
         <div className=" flex  flex-col items-center gap-3 rounded-lg bg-primary p-5  min-[330px]:flex-row">
           <div className="   flex flex-col items-center">
             <h1 className="mb-1 text-lg font-semibold text-primary-content">
-              Questions
+              {t("questions_stat")}
             </h1>
             <p className="text-2xl font-bold text-primary-content">
               {user?._count.questions}
@@ -49,7 +52,7 @@ const User: FC = ({}) => {
 
           <div className="flex flex-col items-center">
             <h1 className="mb-1 text-lg font-semibold text-primary-content">
-              Answers
+              {t("answers_stat")}
             </h1>
             <p className="text-2xl font-bold text-primary-content">
               {user?._count.answers}
@@ -63,21 +66,30 @@ const User: FC = ({}) => {
             className={cx(" btn", active === 1 && "btn-active")}
             onClick={() => changeActive(1)}
           >
-            Questions
+            {t("questions_section")}
           </button>
           <button
             className={cx("btn", active === 2 && "btn-active")}
             onClick={() => changeActive(2)}
           >
-            Answers
+            {t("answers_section")}
           </button>
         </div>
       </div>
-      <div className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2">
-        {user?.questions.map((question) => (
-          <QuestionItem key={question.id} data={question} />
-        ))}
-      </div>
+      {user?.questions.length === 0 ? (
+        <div className={"mt-5"}>
+          <EmptyState type={false} />
+        </div>
+      ) : (
+        <div className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2">
+          (
+          <>
+            {user?.questions.map((question) => (
+              <QuestionItem key={question.id} data={question} />
+            ))}
+          </>
+        </div>
+      )}
     </div>
   );
 };

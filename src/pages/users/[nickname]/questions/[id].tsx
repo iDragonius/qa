@@ -1,6 +1,7 @@
 import { useRouter } from "next/router";
 import React, { type ChangeEvent, type FC, useEffect, useState } from "react";
 import { api } from "~/utils/api";
+import useTranslation from "next-translate/useTranslation";
 
 const UserQuestion: FC = ({}) => {
   const { mutate } = api.question.publishQuestion.useMutation();
@@ -20,7 +21,7 @@ const UserQuestion: FC = ({}) => {
       content: question?.content as string,
     });
   }, [isSuccess, isRefetching]);
-
+  const {t} = useTranslation('common')
   const [questionData, setQuestionData] = useState<{
     title: string;
     content: string;
@@ -39,7 +40,7 @@ const UserQuestion: FC = ({}) => {
   return (
     <div>
       <div className="mb-5 flex items-center justify-between rounded-lg bg-base-100 p-5 ">
-        <h1 className="text-lg text-primary-content">Your question</h1>
+        <h1 className="text-lg text-primary-content">{t('user_questions')}</h1>
         <div
           className=" tooltip tooltip-bottom "
           data-tip="To change status of question go to questions"
@@ -51,25 +52,24 @@ const UserQuestion: FC = ({}) => {
       </div>
 
       <div className="mb-5 rounded-lg bg-base-100 p-5">
-        <h2 className="text-sm text-primary-content">Title</h2>
+        <h2 className="text-sm text-primary-content">{t('title_label')}</h2>
         <p className="text-xs text-neutral-content">
-          Be specific and imagine you’re asking a question to another person.
+          {t('title_description')}
         </p>
         <input
           type="text"
           value={questionData.title}
           onChange={changeData}
           name={"title"}
-          placeholder="Type here"
+          placeholder={t('title_placeholder')}
           className="input-bordered input mt-2 w-full"
         />
       </div>
 
       <div className="mb-5 rounded-lg bg-base-100 p-5">
-        <h2 className="text-sm text-primary-content">Content</h2>
+        <h2 className="text-sm text-primary-content">{t('content_label')}</h2>
         <p className="text-xs text-neutral-content">
-          The body of your question contains your problem details and results.
-          Minimum 30 characters
+          {t('content_description')}
         </p>
         <textarea
           value={questionData.content}
@@ -100,7 +100,7 @@ const UserQuestion: FC = ({}) => {
             );
           }}
         >
-          Save
+          {t('save')}
         </button>
       </div>
     </div>

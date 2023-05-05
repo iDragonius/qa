@@ -4,6 +4,7 @@ import { api } from "~/utils/api";
 import Modal from "./Modal";
 import Navbar2 from "./Navbar2";
 import Sidebar from "./Sidebar";
+import useTranslation from "next-translate/useTranslation";
 
 interface LayoutProps {
   children: ReactNode;
@@ -15,6 +16,8 @@ const Layout: FC<LayoutProps> = ({ children }) => {
   const [error, setError] = useState<string>("");
   const [open, setOpen] = useState<boolean>(false);
   const { mutateAsync } = api.user.chooseNickname.useMutation();
+  const {t} = useTranslation('common')
+
   useEffect(() => {
     if (session?.user.nickname === null && session !== null) {
       setOpen(true);
@@ -35,7 +38,7 @@ const Layout: FC<LayoutProps> = ({ children }) => {
             open={open}
           >
             <h1 className="mb-2 text-xl font-semibold text-primary-content">
-              Choose nickname
+              {t('choose_nickname')}
             </h1>
             <div className="flex w-full items-center justify-between">
               <div className="form-control w-full max-w-xs">
@@ -62,7 +65,7 @@ const Layout: FC<LayoutProps> = ({ children }) => {
                     });
                 }}
               >
-                Save
+                {t('save')}
               </button>
             </div>
           </Modal>

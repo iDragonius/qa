@@ -2,16 +2,18 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { FC, ReactNode } from "react";
 import cx from "classnames";
+import useTranslation from "next-translate/useTranslation";
 interface SidebarProps {
   children: ReactNode;
 }
-const sidebarLinks = [
-  { id: 1, href: "/", label: "Home" },
-  { id: 2, href: "/questions", label: "Questions" },
-];
+
 const Sidebar: FC<SidebarProps> = ({ children }) => {
   const { pathname } = useRouter();
-
+  const {t} = useTranslation('common')
+  const sidebarLinks = [
+    { id: 1, href: "/", label: t('home_page') },
+    { id: 2, href: "/questions", label: t('questions_page') },
+  ];
   return (
     <div className="drawer-mobile drawer">
       <input id="my-drawer-2" type="checkbox" className="drawer-toggle" />

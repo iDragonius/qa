@@ -1,12 +1,31 @@
 import { signIn, signOut, useSession } from "next-auth/react";
 import Link from "next/link";
-import React, { FC, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 import Avatar from "./Avatar";
 import Modal from "./Modal";
+import useTranslation from "next-translate/useTranslation";
+import { useDebounce } from "usehooks-ts";
+import trpc from "~/pages/api/trpc/[trpc]";
+import { api } from "~/utils/api";
 
 const Navbar2: FC = ({}) => {
   const [open, setOpen] = useState<boolean>(false);
   const { data: sessionData } = useSession();
+  const [search, setSearch] = useState<string>("");
+  const debouncedValue = useDebounce<string>(search, 500);
+  const [enabled, setEnabled] = useState<boolean>(false);
+  const { data } = api.question.findQuestion.useQuery(search, {
+    enabled,
+  });
+  useEffect(() => {
+    if (search.length <= 2) {
+      setEnabled(false);
+      return;
+    }
+    setEnabled(true);
+  }, [debouncedValue]);
+
+  const { t } = useTranslation("common");
   return (
     <>
       <Modal
@@ -14,16 +33,36 @@ const Navbar2: FC = ({}) => {
         disableClickOutside={false}
         onClose={() => setOpen(!open)}
       >
+        {enabled && (
+          <div className={"  mb-5 rounded-sm bg-base-200"}>
+            {data?.map((el) => (
+              <Link
+                onClick={() => {
+                  setOpen(false);
+                  setSearch("");
+                  setEnabled(false);
+                }}
+                href={`/questions/${el.id}`}
+                key={el.id}
+                className={"block py-3  px-3 hover:bg-black hover:bg-opacity-5"}
+              >
+                {el.title}
+              </Link>
+            ))}
+          </div>
+        )}
         <div className="flex justify-between">
-          <div className="form-control">
+          <div className="form-control ">
             <input
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
               type="text"
               placeholder="Search"
               className="input-bordered input"
             />
           </div>
           <button onClick={() => setOpen(!open)} className="btn">
-            Close
+            {t("close")}
           </button>
         </div>
       </Modal>
@@ -61,12 +100,30 @@ const Navbar2: FC = ({}) => {
           </Link>
         </div>
         <div className="flex-none gap-2">
-          <div className="form-control hidden sm:block">
+          <div className="form-control relative hidden sm:block">
             <input
               type="text"
-              placeholder="Search"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder={t("search")}
               className="input-bordered input"
             />
+            {enabled && (
+              <div className={"absolute mt-5 w-full rounded-sm bg-base-200"}>
+                {data?.map((el) => (
+                  <Link
+                    href={`/questions/${el.id}`}
+                    onClick={() => setEnabled(false)}
+                    key={el.id}
+                    className={
+                      "block py-3  px-3 hover:bg-black hover:bg-opacity-5"
+                    }
+                  >
+                    {el.title}
+                  </Link>
+                ))}
+              </div>
+            )}
           </div>
           <button
             className="btn-ghost btn-circle btn sm:hidden"
@@ -89,7 +146,7 @@ const Navbar2: FC = ({}) => {
           </button>
           {!sessionData ? (
             <button onClick={() => signIn()} className="btn">
-              Get started
+              {t("auth")}
             </button>
           ) : (
             <Avatar />

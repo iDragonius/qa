@@ -4,6 +4,7 @@ import React, { type FC } from "react";
 import EmptyState from "~/components/EmptyState";
 import { api } from "~/utils/api";
 import cx from "classnames";
+import useTranslation from "next-translate/useTranslation";
 const UserQuestions: FC = ({}) => {
   const { query } = useRouter();
   const { data: questions } = api.question.getUserQuestions.useQuery(
@@ -12,8 +13,10 @@ const UserQuestions: FC = ({}) => {
       refetchOnMount: true,
     }
   );
+  const { t } = useTranslation("common");
+
   if (questions?.length === 0) {
-    return <EmptyState type={"questions"} />;
+    return <EmptyState type={true} />;
   }
   return (
     <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 min-[900px]:grid-cols-3">
@@ -25,7 +28,7 @@ const UserQuestions: FC = ({}) => {
               question.is_answered ? "badge-accent" : "badge-secondary"
             )}
           >
-            {question.is_answered ? "Answered" : "Open"}
+            {question.is_answered ? t("asnwered") : t("open")}
           </span>
 
           <div className="flex h-full flex-col justify-between  rounded-lg bg-base-100 p-5">
@@ -45,13 +48,13 @@ const UserQuestions: FC = ({}) => {
                   question.id
                 }`}
               >
-                Edit
+                {t("edit")}
               </Link>
               <Link
                 className="btn-primary btn-sm btn  px-5"
                 href={`/questions/${question.id}`}
               >
-                View
+                {t("view")}
               </Link>
             </div>
           </div>

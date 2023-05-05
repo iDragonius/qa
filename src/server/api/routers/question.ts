@@ -195,7 +195,7 @@ export const questionRouter = createTRPCRouter({
           id: input.questionsId,
         },
         data: {
-          is_answered: answerCount.length === 1 ? false : true,
+          is_answered: answerCount.length !== 1,
           answers: {
             update: {
               where: {
@@ -207,6 +207,19 @@ export const questionRouter = createTRPCRouter({
             },
           },
         },
+      });
+    }),
+  findQuestion: protectedProcedure
+    .input(z.string())
+    .query(async ({ ctx, input }) => {
+      return await ctx.prisma.question.findMany({
+        where: {
+          title: {
+            contains: input,
+            mode: "insensitive",
+          },
+        },
+        take: 5,
       });
     }),
 });

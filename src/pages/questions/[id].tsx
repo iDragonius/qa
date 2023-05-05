@@ -8,6 +8,7 @@ import { api } from "~/utils/api";
 import tick from "~/assets/tick.svg";
 import cx from "classnames";
 import deleteIcon from "~/assets/delete.svg";
+import useTranslation from "next-translate/useTranslation";
 
 const QuestionItem: FC = ({}) => {
   const { query, isReady } = useRouter();
@@ -26,6 +27,7 @@ const QuestionItem: FC = ({}) => {
   const { mutate: markAnswer } = api.question.markAnswer.useMutation();
   const { mutate: unmarkAnswer } = api.question.unmarkAnswer.useMutation();
   const { mutate: deleteAnswer } = api.answer.deleteAnswer.useMutation();
+  const {t} = useTranslation('common')
   const [content, setContent] = useState<string>("");
   return (
     <div>
@@ -50,7 +52,7 @@ const QuestionItem: FC = ({}) => {
         </div>
         <div className="mb-5 flex  w-max items-center  justify-center self-end rounded-lg bg-base-100 py-5 px-10 ">
           <Link href={"/questions/ask"} className="btn-primary btn">
-            Ask Question
+            {t('ask')}
           </Link>
         </div>
       </div>
@@ -63,11 +65,11 @@ const QuestionItem: FC = ({}) => {
           </p>
           <div className=" divider divider-horizontal mx-1" />
           <p className=" text-sm text-neutral-content">
-            {question?.views} views
+            {question?.views} {t('views')}
           </p>
           <div className=" divider divider-horizontal mx-1" />
           <p className=" text-sm text-neutral-content">
-            {question?.answers.length} answers
+            {question?.answers.length} {t('answers')}
           </p>
         </div>
         <div className="divider my-1" />
@@ -89,7 +91,7 @@ const QuestionItem: FC = ({}) => {
                 d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
               ></path>
             </svg>
-            <span>in Your questions you can mark answer like answer</span>
+            <span>{t('mark_answer')}</span>
           </div>
           <div className="flex-none">
             <button className="btn-primary btn-sm btn">OK</button>
@@ -98,7 +100,7 @@ const QuestionItem: FC = ({}) => {
       )}
       <div className="mb-5 rounded-lg bg-base-100 p-5 text-primary-content">
         <div>
-          <h1 className="text-xl">Your answer</h1>
+          <h1 className="text-xl">{t('your_answer')}</h1>
           <div className="divider  my-1" />
         </div>
         <textarea
@@ -121,13 +123,13 @@ const QuestionItem: FC = ({}) => {
             )
           }
         >
-          Send your answer
+          {t('send_answer')}
         </button>
       </div>
       <div className="mb-5 rounded-lg bg-base-100 p-5 text-primary-content">
         <div>
           <h1 className="text-xl">
-            Answers{" "}
+            {t('answers_stat')}{" "}
             <span className="ml-3 text-neutral-content">
               {question?.answers.length}
             </span>
@@ -235,7 +237,7 @@ const QuestionItem: FC = ({}) => {
                                     <polygon points="400 145.49 366.51 112 256 222.51 145.49 112 112 145.49 222.51 256 112 366.51 145.49 400 256 289.49 366.51 400 400 366.51 289.49 256 400 145.49" />
                                   </svg>
 
-                                  <span>Unmark</span>
+                                  <span>{t('unmark')}</span>
                                 </button>
                               </li>
                             ) : (
@@ -265,7 +267,7 @@ const QuestionItem: FC = ({}) => {
                                     width={20}
                                     alt={"tick"}
                                   />
-                                  <span>Mark as answer</span>
+                                  <span>{t('mark')}</span>
                                 </button>
                               </li>
                             )}
@@ -299,7 +301,7 @@ const QuestionItem: FC = ({}) => {
                                 width={20}
                                 alt={"delete"}
                               />
-                              Delete
+                              {t('delete')}
                             </button>
                           </li>
                         )}

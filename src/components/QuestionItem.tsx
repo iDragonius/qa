@@ -3,12 +3,15 @@ import React, { FC } from "react";
 import { RouteTypes } from "~/utils/types";
 import dayjs from "dayjs";
 import Image from "next/image";
+import useTranslation from "next-translate/useTranslation";
 
 interface QuestionItemProps {
   data: RouteTypes["question"]["getAllQuestions"][0];
 }
 
 const QuestionItem: FC<QuestionItemProps> = ({ data }) => {
+  const {t} = useTranslation('common')
+
   return (
     <Link
       href={`/questions/${data?.id || ""}`}
@@ -16,11 +19,11 @@ const QuestionItem: FC<QuestionItemProps> = ({ data }) => {
     >
       {data?.is_answered ? (
         <div className="indicator-center indicator-bottom badge-secondary badge indicator-item ">
-          Answered
+          {t('answered')}
         </div>
       ) : (
         <div className="indicator-center indicator-bottom badge-accent badge indicator-item">
-          Open
+          {t('open')}
         </div>
       )}
       <div className="card-body flex flex-col justify-between space-y-1 py-4">
