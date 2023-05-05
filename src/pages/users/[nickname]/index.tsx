@@ -6,6 +6,8 @@ import cx from "classnames";
 import QuestionItem from "~/components/QuestionItem";
 import useTranslation from "next-translate/useTranslation";
 import EmptyState from "~/components/EmptyState";
+import Link from "next/link";
+
 const User: FC = ({}) => {
   const { query, isReady } = useRouter();
   const [active, setActive] = useState<1 | 2>(1);
@@ -76,19 +78,50 @@ const User: FC = ({}) => {
           </button>
         </div>
       </div>
-      {user?.questions.length === 0 ? (
-        <div className={"mt-5"}>
-          <EmptyState type={false} />
-        </div>
+      {active === 1 ? (
+        <>
+          {user?.questions.length === 0 ? (
+            <div className={"mt-5"}>
+              <EmptyState type={false} />
+            </div>
+          ) : (
+            <div className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2">
+              <>
+                {user?.questions.map((question) => (
+                  <QuestionItem key={question.id} data={question} />
+                ))}
+              </>
+            </div>
+          )}
+        </>
       ) : (
-        <div className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2">
-          (
-          <>
-            {user?.questions.map((question) => (
-              <QuestionItem key={question.id} data={question} />
-            ))}
-          </>
-        </div>
+        <>
+          {user?.answers.length === 0 ? (
+            <div className={"mt-5"}>
+              <EmptyState type={false} />
+            </div>
+          ) : (
+            <div className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2">
+              <>
+                {user?.answers.map((answer) => (
+                  <Link
+                    key={answer.id}
+                    href={`/questions/${answer.question?.id || ""}`}
+                    className={cx(
+                      "card w-full cursor-pointer bg-base-200 py-5 px-5  transition-all ease-in-out hover:scale-105",
+                      answer.is_answer ? "border-2 border-success" : ""
+                    )}
+                  >
+                    <h2 className={"mb-2 text-[18px] text-primary-content"}>
+                      {answer.question.title}
+                    </h2>
+                    <p>{answer.content}</p>
+                  </Link>
+                ))}
+              </>
+            </div>
+          )}
+        </>
       )}
     </div>
   );

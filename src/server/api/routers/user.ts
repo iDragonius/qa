@@ -37,7 +37,11 @@ export const userRouter = createTRPCRouter({
             tags: true,
           },
         },
-
+        answers: {
+          include: {
+            question: true,
+          },
+        },
         _count: {
           select: {
             questions: true,

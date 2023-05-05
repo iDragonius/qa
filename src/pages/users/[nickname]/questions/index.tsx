@@ -19,7 +19,7 @@ const UserQuestions: FC = ({}) => {
     return <EmptyState type={true} />;
   }
   return (
-    <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 min-[900px]:grid-cols-3">
+    <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 ">
       {questions?.map((question) => (
         <div key={question.id} className="indicator flex w-full flex-col">
           <span
@@ -28,7 +28,7 @@ const UserQuestions: FC = ({}) => {
               question.is_answered ? "badge-accent" : "badge-secondary"
             )}
           >
-            {question.is_answered ? t("asnwered") : t("open")}
+            {question.is_answered ? t("answered") : t("open")}
           </span>
 
           <div className="flex h-full flex-col justify-between  rounded-lg bg-base-100 p-5">
@@ -43,7 +43,7 @@ const UserQuestions: FC = ({}) => {
 
             <div className="j flex items-center justify-end space-x-3">
               <Link
-                className="btn-ghost btn-sm btn  px-5"
+                className="btn-ghost btn-sm btn  break-words  px-5"
                 href={`/users/${query.nickname as string}/questions/${
                   question.id
                 }`}
