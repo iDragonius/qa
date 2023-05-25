@@ -32,7 +32,7 @@ export const dashboardRouter = createTRPCRouter({
     const users = await ctx.prisma.user.findMany({
       take: 3,
       orderBy: {
-        questions: {
+        answers: {
           _count: "desc",
         },
       },
